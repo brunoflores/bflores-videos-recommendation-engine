@@ -1,0 +1,169 @@
+---
+title: "Descrição e exploração inicial dos Dados"
+author: "Bruno Flores"
+date: "20 de maio de 2015"
+output: html_document
+---
+
+Importando pacotes necessários:
+
+```{r import_libraries, message=FALSE}
+library(dplyr)
+library(ineq)
+```
+
+Lendo dados crus para iniciar os trabalhos:
+
+```{r read_data, cache=TRUE}
+videos_views <- read.csv(file = '../data/video_views.csv', header = TRUE)
+videos_views$ultima_visualizacao <- 
+        as.POSIXct(videos_views$ultima_visualizacao / 1000, 
+                   origin = "1970-01-01")
+videos_views <- tbl_df(videos_views)
+asc_by_date <- arrange(videos_views, ultima_visualizacao)
+```
+
+Em uma análise inicial dos dados, chamam a atenção leituras negativas para a
+*porcentagem vista*:
+
+```{r raw_data_summary}
+summary(videos_views)
+```
+
+Sendo uma indicação da porcentagem do vídeo vista pelo usuário, opto por tratar
+como *erros de leitura*. Excluindo porcentagens negativas:
+
+```{r filter_out_negatives}
+videos_views <- filter(videos_views, porcentagem_vista >= 0)
+```
+
+Observando a distribuição de frequência da *porcentagem vista*, em escala 
+logarítmica, vemos que a maior concentração de vídeos possui porcentagem de 
+vistualização igual a (ou muito próximo de) 1:
+
+```{r histogram_view_percentage}
+hist(log(videos_views$porcentagem_vista), 
+     breaks = 50, 
+     main = 'Histograma de log(porcentagem_vista)', 
+     xlab = 'log(porcentagem_vista)', 
+     ylab = 'Frequência')
+```
+
+Nota-se que a distribuição de usuários é bastante equilibrada:
+
+```{r histogram_users}
+hist(as.numeric(videos_views$usuario_id))
+```
+
+Já a distribuição dos vídeos nem tanto, porém mantêm relativo equilíbrio:
+
+```{r histogram_videos}
+hist(as.numeric(videos_views$video_id))
+```
+
+Vídeos ordenados pela frequência:
+
+```{r videos_by_frequency_count}
+video_count <- group_by(videos_views, video_id) %>% 
+        summarise(count = n()) %>%
+        arrange(desc(count))
+summary(video_count)
+```
+
+Como mostra a tabela anterior, a distribuição dos vídeos é maior 
+em torno de 15:
+
+```{r histogram_videos_count}
+hist(log(video_count$count), breaks = 20)
+```
+
+Quantidade de vídeos únicos por dia:
+
+```{r}
+qty_video_by_day <- asc_by_date
+qty_video_by_day$day <- 
+        as.character(round(qty_video_by_day$ultima_visualizacao, "day"))
+qty_video_by_day <- group_by(qty_video_by_day, day) %>% 
+        summarise(count = n_distinct(video_id))
+qty_video_by_day$day <- as.POSIXct(qty_video_by_day$day)
+plot(qty_video_by_day$day, qty_video_by_day$count,
+     type = 'b', 
+     xlab = 'Dias', ylab = 'Vídeos únicos')
+```
+
+Usuários ordenados pela frequência:
+
+```{r users_by_frequency_count}
+user_count <- group_by(videos_views, usuario_id) %>% 
+        summarise(count = n()) %>%
+        arrange(desc(count))
+summary(user_count)
+```
+
+Podemos ver que, em média, cada usuário assistiu a 
+`r sum(user_count$count) / nrow(user_count)` vídeos.
+
+Ilustrando o que a tabela anterior mostrou, vemos que a grande maioria dos 
+usuários assistiu a apenas um vídeo:
+
+```{r histogram_users_count}
+hist(log(user_count$count), breaks = 20)
+```
+
+Mais precisamente, 
+`r nrow(filter(user_count, count == 1)) / nrow(user_count) * 100 ` %
+assitiu a apenas um vídeo.
+
+Quantidade de usuários únicos por dia:
+
+```{r}
+qty_user_by_day <- asc_by_date
+qty_user_by_day$day <- 
+        as.character(round(qty_user_by_day$ultima_visualizacao, "day"))
+qty_user_by_day <- group_by(qty_user_by_day, day) %>% 
+        summarise(count = n_distinct(usuario_id))
+qty_user_by_day$day <- as.POSIXct(qty_user_by_day$day)
+plot(qty_user_by_day$day, qty_user_by_day$count,
+     type = 'b', 
+     xlab = 'Dias', ylab = 'Usuários únicos')
+```
+
+Dividindo os dados em porções de 25%, vemos como se apresenta a 
+quantidade de vídeos e usuários, respectivamente:
+
+```{r quantile_counts}
+quantile(video_count$count, probs = seq(0, 1, 0.25))
+quantile(user_count$count, probs = seq(0, 1, 0.25))
+```
+
+Quantidade total de medições distribuídas por dia:
+
+```{r}
+qty_by_day <- asc_by_date
+qty_by_day$day <- as.character(round(qty_by_day$ultima_visualizacao, "day"))
+qty_by_day <- group_by(qty_by_day, day) %>% summarise(count = n())
+qty_by_day$day <- as.POSIXct(qty_by_day$day)
+plot(qty_by_day$day, qty_by_day$count, 
+     type = 'b', 
+     xlab = 'Dias', ylab = 'Medições')
+```
+
+Gini Index usando a quantidade de usuários que assistiram cada vídeo:
+
+```{r}
+incr_prop <- group_by(videos_views, video_id) %>% 
+        summarise(count = n_distinct(usuario_id))
+Gini(incr_prop$count)
+```
+
+Está próximo a 1, indicando que a quantidade de pessoas que assistiram aos 
+vídeos é bastante diversificada. Um Gini Index igual a 1 significaria que 
+todos os vídeos foram assistidos por um quantidade diferente de pessoas. 
+Igual a 0 significaria que a quantidade de pessoas que assistiram aos vídeos 
+é igualmente distribuída.
+
+Proporção usuários/videos:
+
+```{r}
+nrow(distinct(videos_views, usuario_id)) / nrow(distinct(videos_views, video_id))
+```

@@ -1,0 +1,5 @@
+algorithm,metric,value
+PearsonCorrelationSimilarity,RMSE,2.5
+PearsonCorrelationSimilarity,MAE,1.3
+LogLikelihoodSimilarity,RMSE,2.0
+LogLikelihoodSimilarity,MAE,1.1

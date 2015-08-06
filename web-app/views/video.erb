@@ -1,0 +1,20 @@
+<div class="page-header">
+  <h1>Você acabou de assitir <small><%= video_title %></small></h1>
+</div>
+<a href="/usuario/<%= session[:user_id] %>" class="btn btn-primary">Voltar</a>
+<div class="col-md-12">
+    <h2>O que você acha desses?</h2>
+    <% similar_to.each do |video| %>
+        <div class="media">
+          <div class="media-left">
+            <a href="/video/<%= video['_source']['_id'] %>/<%= video['_source']['titulo'] %>">
+              <img class="media-object" src="http://placehold.it/64x64" alt="">
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="media-heading"><%= video['_source']['titulo'] %></h4>
+            <p><%= video['_source']['descricao'] %></p>
+          </div>
+        </div>
+    <% end %>
+</div>

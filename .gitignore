@@ -1,0 +1,13 @@
+# Vagrant
+.vagrant/
+
+# R
+.RData
+.Rhistory
+cache/
+
+# Ruby
+.ruby-version
+
+# Java
+ml-app/Recommender/.settings/

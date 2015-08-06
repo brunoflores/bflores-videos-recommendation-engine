@@ -1,0 +1,46 @@
+<div class="col-md-6">
+    <h2>Vídeos recomendados para você!</h2>
+    <div class="list-group">
+        <% videos_top_recs.each do |video| %>
+            <a href="/video/<%= video['_source']['video_id'] %>/<%= video['_source']['titulo'] %>" class="list-group-item">
+                <h4 class="list-group-item-heading"><%= video['_source']['titulo'] %></h4>
+                <p class="list-group-item-text"><%= video['_source']['descricao'] %></p>
+            </a>
+        <% end %>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <h2>Programas recomendados para você!</h2>
+    <div class="list-group">
+        <% shows_top_recs.each do |show| %>
+            <a href="/programa/<%= show['_source']['id'] %>/<%= show['_source']['titulo'] %>" class="list-group-item">
+                <h4 class="list-group-item-heading"><%= show['_source']['titulo'] %></h4>
+                <p class="list-group-item-text"><%= show['_source']['descricao'] %></p>
+            </a>
+        <% end %>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <% categories.each do |category| %>
+        <div class="row">
+            <div class="page-header">
+                <h3>Como você assiste <span class="label label-primary"><%= category[:title] %></span>, achamos que você vai gostar:</h3>
+            </div>
+            <% category[:videos].each do |video| %>
+                <div class="media">
+                  <div class="media-left">
+                    <a href="/video/<%= video['_source']['video_id'] %>/<%= video['_source']['titulo'] %>">
+                      <img class="media-object" src="http://placehold.it/64x64" alt="">
+                    </a>
+                  </div>
+                  <div class="media-body">
+                    <h4 class="media-heading"><%= video['_source']['titulo'] %></h4>
+                    <p><%= video['_source']['descricao'] %></p>
+                  </div>
+                </div>
+            <% end %>
+        </div>
+    <% end %>
+</div>

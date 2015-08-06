@@ -1,0 +1,23 @@
+<div class="page-header">
+  <h1>Programas similares <small><%= show_title %></small></h1>
+</div>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <a href="/usuario/<%= session[:user_id] %>" class="btn btn-primary">Voltar</a>
+  </div>
+</div>
+<div class="col-md-12">
+    <% similar_to.each do |show| %>
+        <div class="media">
+          <div class="media-left">
+            <a href="/programa/<%= show['_source']['id'] %>/<%= show['_source']['titulo'] %>">
+              <img class="media-object" src="http://placehold.it/64x64" alt="">
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="media-heading"><%= show['_source']['titulo'] %></h4>
+            <p><%= show['_source']['descricao'] %></p>
+          </div>
+        </div>
+    <% end %>
+</div>
