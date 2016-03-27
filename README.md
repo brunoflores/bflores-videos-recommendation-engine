@@ -12,7 +12,7 @@ Existem dois arquivos na pasta `data` com as seguintes informações:
   - programa_titulo: Título do programa
   - programa_descricao: Descrição do programa
   - categoria: Categoria do vídeo
-  - titulo: Título do vídeo
+  - titulo: Título do vídeotrain
   - descricao: Descrição do vídeo
   - tags: Tags do vídeo, separadas por ";"
 
@@ -149,7 +149,7 @@ Uma descrição dos principais segue abaixo:
 
 #### Fluxo de treinamento dos modelos
 
-O script [train.pig](scripts/train.pig) automatiza o processo de treinamento do modelo, com base em novos dados, e re-indexação do mecanismo de busca. As tarefas executados por ele estão documentadas no própio código.
+O script [train.sh](scripts/train.sh) automatiza o processo de treinamento do modelo, com base em novos dados, e re-indexação do mecanismo de busca. As tarefas executados por ele estão documentadas no própio código.
 
 ## Escolha dos algoritmos
 
