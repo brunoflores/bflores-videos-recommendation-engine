@@ -7,20 +7,20 @@ Personalized recommendation of videos based on the user's viewing history and vi
 There are two files inside `data/` with the following information:
 
 - videos.csv: Contains one row for each video, with the following columns:
-  - Video_id: Video Id
-  - Programa_id: Show Id
-  - Programa_titulo: Show Title
-  - Programa_descricao: Show Description
-  - Category: Video Category
-  - Title: Video title
-  - Description: Video description
-  - Tags: Tags separated by ";"
+  - video_id: Video Id
+  - programa_id: Show Id
+  - programa_titulo: Show Title
+  - programa_descricao: Show Description
+  - categoria: Video Category
+  - titulo: Video title
+  - descricao: Video description
+  - tags: Tags separated by ";"
 
 - video_views.csv: Contains one row for each pair of user/video, with the following columns:
-  - Usuario_id: User Id
-  - Video_id: Video Id
-  - Porcentagem_vista: Video percentage seen by the user. Value is cumulative and can be larger if a user has viewed the video more than once.
-  - Ultima_visualizacao: Timestamp of the last time the user saw the video
+  - usuario_id: User Id
+  - video_id: Video Id
+  - porcentagem_vista: Video percentage seen by the user. Value is cumulative and can be larger if a user has viewed the video more than once.
+  - ultima_visualizacao: Timestamp of the last time the user saw the video
 
 ## Initial Exploration
 
